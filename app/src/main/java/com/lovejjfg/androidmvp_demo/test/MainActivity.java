@@ -71,23 +71,7 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
         super.onDestroy();
     }
 
-    @Override
-    public void showProgress() {
-        onRefreshView(true);
-        if (noDataView != null) {
-            noDataView.setVisibility(View.INVISIBLE);
-        }
-//        mRecycleView.setVisibility(View.INVISIBLE);
-    }
 
-    @Override
-    public void hideProgress() {
-        onRefreshView(false);
-        if (noDataView != null) {
-            noDataView.setVisibility(View.INVISIBLE);
-        }
-//        mRecycleView.setVisibility(View.VISIBLE);
-    }
 
     @Override
     public void setItems(ArrayList<String> items) {
@@ -119,7 +103,19 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
 
     @Override
     public void onRefreshView(final boolean isRefreshing) {
-        mSwip.setRefreshing(isRefreshing);
+        mSwip.post(new Runnable() {
+            @Override
+            public void run() {
+//                if (isRefreshing && mSwip.isRefreshing()) {
+//                    return;
+//                }
+                if (mSwip.isRefreshing() && !isRefreshing) {
+                    mSwip.setRefreshing(false);
+                } else {
+                    mSwip.setRefreshing(isRefreshing);
+                }
+            }
+        });
     }
 
     @Override

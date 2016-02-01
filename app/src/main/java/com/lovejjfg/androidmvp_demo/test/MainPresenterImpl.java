@@ -26,13 +26,13 @@ public class MainPresenterImpl implements MainPresenter, OnLoadDateListener {
     private FindItemsInteractor findItemsInteractor;
     private MyBaseAdapter mAdapter;
     private boolean isLoadingMore;
-    private boolean isRefresh = false;
 
     public MainPresenterImpl(MainView mainView) {
         this.mainView = mainView;
         findItemsInteractor = new FindItemsInteractorImpl();
         if (mainView != null) {
-            mainView.showProgress();
+            mainView.onRefreshView(true);
+
         }
         findItemsInteractor.loadItems(this);
     }
@@ -63,13 +63,8 @@ public class MainPresenterImpl implements MainPresenter, OnLoadDateListener {
 
     @Override
     public void onRefresh() {
-//        if (null != mItems) {
-//            mItems.clear();
-//        }
-        isRefresh = true;
         if (mainView != null) {
             mainView.onRefreshView(true);
-            mainView.showProgress();
         }
         findItemsInteractor.loadItems(this);
 
@@ -83,10 +78,8 @@ public class MainPresenterImpl implements MainPresenter, OnLoadDateListener {
 
     @Override
     public void onRefreshFinished(ArrayList<String> items) {
-        isRefresh = false;
         mainView.onRefreshView(false);
         mainView.setItems(items);
-        mainView.hideProgress();
     }
 
     @Override
@@ -99,7 +92,7 @@ public class MainPresenterImpl implements MainPresenter, OnLoadDateListener {
                 mAdapter.notifyItemChanged(mAdapter.getDataItemCount());
                 return;
             }
-            mainView.hideProgress();
+            mainView.onRefreshView(false);
             mAdapter.addData(items);
         }
 
@@ -108,21 +101,15 @@ public class MainPresenterImpl implements MainPresenter, OnLoadDateListener {
     @Override
     public void onLoadError(String msg) {
         isLoadingMore = false;
-        isRefresh = false;
         if (null != mAdapter) {
             mAdapter.notifyItemChanged(mAdapter.getDataItemCount());
             mAdapter.loadError(msg);
         }
-//        if (mainView != null) {
-//            mainView.loadError();
-//        }
     }
 
     @Override
     public void onLoadEmpty() {
-        isLoadingMore = false;
-        isRefresh = false;
-        mainView.hideProgress();
+        mainView.onRefreshView(false);
 
         if (null != mAdapter) {
             mAdapter.notifyItemChanged(mAdapter.getDataItemCount());

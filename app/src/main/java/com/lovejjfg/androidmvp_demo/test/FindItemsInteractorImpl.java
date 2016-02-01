@@ -35,7 +35,7 @@ public class FindItemsInteractorImpl implements FindItemsInteractor {
         new Thread(){
             @Override
             public void run() {
-                SystemClock.sleep(800);
+                SystemClock.sleep(1800);
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {

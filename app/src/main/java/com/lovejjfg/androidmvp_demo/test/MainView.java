@@ -21,9 +21,7 @@ import java.util.ArrayList;
 
 public interface MainView {
 
-    void showProgress();
 
-    void hideProgress();
 
     void setItems(ArrayList<String> items);
 
