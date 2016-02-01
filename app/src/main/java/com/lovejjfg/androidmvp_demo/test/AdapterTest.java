@@ -58,16 +58,18 @@ public class AdapterTest extends MyBaseAdapter {
     @Override
     public void bindFooterViewHolder(RecyclerView.ViewHolder holder) {
 
-        ((FooterViewHolder)holder).bar.setVisibility(mPresenter.isLoadingMore() ? View.VISIBLE : View.GONE);
+        ((FooterViewHolder) holder).bar.setVisibility(mPresenter.isLoadingMore() ? View.VISIBLE : View.GONE);
     }
 
     @Override
     public void bindItemViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-        ((ItemViewHolder)holder).mButton.setText(mItems.get(position));
-        ((ItemViewHolder)holder).mCardView.setOnClickListener(new View.OnClickListener() {
+        ((ItemViewHolder) holder).mButton.setText(mItems.get(position));
+        ((ItemViewHolder) holder).mCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                itemClickListener.onItemClickListener(holder, holder.itemView, position);
+                if (null != itemClickListener) {
+                    itemClickListener.onItemClickListener(holder, holder.itemView, position);
+                }
             }
         });
     }

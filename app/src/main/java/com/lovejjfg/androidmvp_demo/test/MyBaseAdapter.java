@@ -39,6 +39,7 @@ public abstract class MyBaseAdapter extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         noDataView = onCreateNoDataView(parent);
         if (null != noDataView) {
+
             noDataView.setVisibility(View.INVISIBLE);
         }
         netErrorView = onCreateNetErrorView(parent);

@@ -32,27 +32,28 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements MainView, SwipeRefreshLayout.OnRefreshListener, MyAdapter.ItemClickListener, View.OnClickListener {
 
-    //    private RecyclerView mRecycleView;
-    //    private ProgressBar progressBar;
+    private RecyclerView mRecycleView;
     private MainPresenter presenter;
-    //    private SwipeRefreshLayout mSwip;
+    private SwipeRefreshLayout mSwip;
     private ViewStub mVsNoData;
     private ViewStub mVsNetError;
     private View noDataView;
-    private RefreshRecycleView mRefreshRecycleView;
+    //    private View noDataView;
+//    private RefreshRecycleView mRefreshRecycleView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mRefreshRecycleView = (RefreshRecycleView) findViewById(R.id.rrc);
-//        mRecycleView = (RecyclerView) findViewById(R.id.rv);
-//        progressBar = (ProgressBar) findViewById(R.id.pg);
+        noDataView = findViewById(R.id.vs_no_date);
+//        mRefreshRecycleView = (RefreshRecycleView) findViewById(R.id.rrc);
+        mRecycleView = (RecyclerView) findViewById(R.id.rv);
+        mSwip = (SwipeRefreshLayout) findViewById(R.id.srl);
         GridLayoutManager manager = new GridLayoutManager(this, 1);
-        mRefreshRecycleView.setLayoutManager(manager);
-        mRefreshRecycleView.setOnRefreshListener(this);
+        mRecycleView.setLayoutManager(manager);
+        mSwip.setOnRefreshListener(this);
         presenter = new MainPresenterImpl(this);
-        mRefreshRecycleView.addOnScrollListener(new InfiniteScrollListener(manager, presenter));
+        mRecycleView.addOnScrollListener(new InfiniteScrollListener(manager, presenter));
 
 
     }
@@ -72,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
 
     @Override
     public void showProgress() {
-//        progressBar.setVisibility(View.VISIBLE);
         onRefreshView(true);
         if (noDataView != null) {
             noDataView.setVisibility(View.INVISIBLE);
@@ -82,21 +82,19 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
 
     @Override
     public void hideProgress() {
-//        mSwip.setRefreshing(false);
         onRefreshView(false);
-//        progressBar.setVisibility(View.INVISIBLE);
         if (noDataView != null) {
             noDataView.setVisibility(View.INVISIBLE);
         }
-//        mRefreshRecycleView.setVisibility(View.VISIBLE);
+//        mRecycleView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void setItems(ArrayList<String> items) {
-//        mRefreshRecycleView.setVisibility(View.VISIBLE);
+        mRecycleView.setVisibility(View.VISIBLE);
         MyBaseAdapter myAdapter = new AdapterTest(this, items, presenter);
         presenter.setAdapter(myAdapter);
-        mRefreshRecycleView.setAdapter(myAdapter);
+        mRecycleView.setAdapter(myAdapter);
     }
 
     @Override
@@ -113,15 +111,15 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
 //        if (noDataView == null) {
 //            noDataView = mVsNoData.inflate();
 //        }
-//        noDataView.setVisibility(View.VISIBLE);
-//        mRefreshRecycleView.setVisibility(View.INVISIBLE);
-//        noDataView.setOnClickListener(this);
+        noDataView.setVisibility(View.VISIBLE);
+        mRecycleView.setVisibility(View.INVISIBLE);
+        noDataView.setOnClickListener(this);
 
     }
 
     @Override
     public void onRefreshView(final boolean isRefreshing) {
-        mRefreshRecycleView.setRefreshing(isRefreshing);
+        mSwip.setRefreshing(isRefreshing);
     }
 
     @Override

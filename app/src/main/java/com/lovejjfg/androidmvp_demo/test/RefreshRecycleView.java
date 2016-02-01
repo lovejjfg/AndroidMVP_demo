@@ -14,6 +14,7 @@ import com.lovejjfg.androidmvp_demo.R;
 
 /**
  * Created by zhangjun on 2016-02-01.
+ * todo 为什么填充了显示不出来
  */
 public class RefreshRecycleView extends LinearLayout {
 

@@ -26,7 +26,7 @@ public class MainPresenterImpl implements MainPresenter, OnLoadDateListener {
     private FindItemsInteractor findItemsInteractor;
     private MyBaseAdapter mAdapter;
     private boolean isLoadingMore;
-    private boolean isRefresh;
+    private boolean isRefresh = false;
 
     public MainPresenterImpl(MainView mainView) {
         this.mainView = mainView;
@@ -43,9 +43,9 @@ public class MainPresenterImpl implements MainPresenter, OnLoadDateListener {
 
     @Override
     public void onItemClicked(int position) {
-        if (mainView != null) {
+//        if (mainView != null) {
 //            mainView.showMessage(mItems.get(position));
-        }
+//        }
     }
 
     @Override
@@ -68,7 +68,7 @@ public class MainPresenterImpl implements MainPresenter, OnLoadDateListener {
 //        }
         isRefresh = true;
         if (mainView != null) {
-            mainView.onRefreshView(isRefresh);
+            mainView.onRefreshView(true);
             mainView.showProgress();
         }
         findItemsInteractor.loadItems(this);
@@ -84,7 +84,7 @@ public class MainPresenterImpl implements MainPresenter, OnLoadDateListener {
     @Override
     public void onRefreshFinished(ArrayList<String> items) {
         isRefresh = false;
-        mainView.onRefreshView(isRefresh);
+        mainView.onRefreshView(false);
         mainView.setItems(items);
         mainView.hideProgress();
     }
@@ -128,9 +128,9 @@ public class MainPresenterImpl implements MainPresenter, OnLoadDateListener {
             mAdapter.notifyItemChanged(mAdapter.getDataItemCount());
             mAdapter.dataEmpty();
         }
-//        if (mainView != null) {
-//            mainView.dataEmpty();
-//        }
+        if (mainView != null) {
+            mainView.onDataEmpty();
+        }
     }
 
     public void setRefreshing(final boolean isRefreshing) {

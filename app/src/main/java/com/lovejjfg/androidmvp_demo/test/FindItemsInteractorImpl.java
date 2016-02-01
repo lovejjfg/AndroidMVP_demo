@@ -35,16 +35,16 @@ public class FindItemsInteractorImpl implements FindItemsInteractor {
         new Thread(){
             @Override
             public void run() {
-                SystemClock.sleep(3000);
+                SystemClock.sleep(800);
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
                         int i = ((int) (Math.random()*10))%2;
                         switch (i) {
-                            case 0:
+                            case 1:
                                 listener.onRefreshFinished(createArrayList());
                                 break;
-                            case 1:
+                            case 0:
                                 listener.onLoadEmpty();
                                 break;
                         }
