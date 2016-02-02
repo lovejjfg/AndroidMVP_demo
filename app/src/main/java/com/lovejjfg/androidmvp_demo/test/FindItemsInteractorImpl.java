@@ -65,12 +65,12 @@ public class FindItemsInteractorImpl implements FindItemsInteractor {
                     @Override
                     public void run() {
                         int i = ((int) (Math.random()*10))%2;
-                        switch (0) {
+                        switch (i) {
                             case 0:
                                 listener.onLoadMoreFinished(createMoreList());
                                 break;
                             case 1:
-                                listener.onLoadEmpty();
+                                listener.onLoadMoreFinished(null);
                                 break;
                         }
                     }

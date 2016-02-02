@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ProgressBar;
 
 import com.lovejjfg.androidmvp_demo.R;
 
@@ -15,6 +14,7 @@ import java.util.ArrayList;
 
 /**
  * Created by zhangjun on 2016-02-01.
+ *
  */
 public class AdapterTest extends MyBaseAdapter {
     public AdapterTest(Context context, ArrayList<String> items, MainPresenter presenter) {
@@ -22,11 +22,10 @@ public class AdapterTest extends MyBaseAdapter {
     }
 
     @Override
-    protected RecyclerView.ViewHolder onCreateFooterViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.footerview, parent, false);
-//            view.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        return new FooterViewHolder(view);
+    protected View onCreateFooterView(ViewGroup parent) {
+        return getInflater().inflate(R.layout.footerview, parent, false);
     }
+
 
     @Override
     protected RecyclerView.ViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType) {
@@ -37,12 +36,13 @@ public class AdapterTest extends MyBaseAdapter {
 
     @Override
     protected View onCreateNetErrorView(ViewGroup parent) {
-        return mInflater.inflate(R.layout.view_net_error, parent, false);
+        return getInflater().inflate(R.layout.view_net_error, parent, false);
     }
+
 
     @Override
     protected View onCreateNoDataView(ViewGroup parent) {
-        return mInflater.inflate(R.layout.view_no_date, parent, false);
+        return getInflater().inflate(R.layout.view_no_date, parent, false);
     }
 
     @Override
@@ -55,15 +55,11 @@ public class AdapterTest extends MyBaseAdapter {
 
     }
 
-    @Override
-    public void bindFooterViewHolder(RecyclerView.ViewHolder holder) {
 
-        ((FooterViewHolder) holder).bar.setVisibility(mPresenter.isLoadingMore() ? View.VISIBLE : View.GONE);
-    }
 
     @Override
     public void bindItemViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-        ((ItemViewHolder) holder).mButton.setText(mItems.get(position));
+        ((ItemViewHolder) holder).mButton.setText(getmItems().get(position));
         ((ItemViewHolder) holder).mCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,13 +82,5 @@ public class AdapterTest extends MyBaseAdapter {
         }
     }
 
-    class FooterViewHolder extends RecyclerView.ViewHolder {
-        ProgressBar bar;
 
-        public FooterViewHolder(View view) {
-            super(view);
-            bar = (ProgressBar) view.findViewById(R.id.progressbar);
-        }
-
-    }
 }

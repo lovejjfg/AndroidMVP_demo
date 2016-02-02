@@ -24,20 +24,26 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.lovejjfg.androidmvp_demo.R;
 
 import java.util.ArrayList;
 
+
 public class MainActivity extends AppCompatActivity implements MainView, SwipeRefreshLayout.OnRefreshListener, MyAdapter.ItemClickListener, View.OnClickListener {
 
     private RecyclerView mRecycleView;
     private MainPresenter presenter;
     private SwipeRefreshLayout mSwip;
+    @SuppressWarnings("unused")
     private ViewStub mVsNoData;
+    @SuppressWarnings("unused")
     private ViewStub mVsNetError;
-    private View noDataView;
+    private Button noDataView;
+    private RelativeLayout rlNoData;
     //    private View noDataView;
 //    private RefreshRecycleView mRefreshRecycleView;
 
@@ -45,7 +51,10 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        noDataView = findViewById(R.id.vs_no_date);
+        noDataView = (Button) findViewById(R.id.vs_no_date);
+        rlNoData = (RelativeLayout) findViewById(R.id.rl_no_data);
+        noDataView.setOnClickListener(this);
+        rlNoData.setOnClickListener(this);
 //        mRefreshRecycleView = (RefreshRecycleView) findViewById(R.id.rrc);
         mRecycleView = (RecyclerView) findViewById(R.id.rv);
         mSwip = (SwipeRefreshLayout) findViewById(R.id.srl);
@@ -75,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
 
     @Override
     public void setItems(ArrayList<String> items) {
+        rlNoData.setVisibility(View.GONE);
         mRecycleView.setVisibility(View.VISIBLE);
         MyBaseAdapter myAdapter = new AdapterTest(this, items, presenter);
         presenter.setAdapter(myAdapter);
@@ -95,9 +105,10 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
 //        if (noDataView == null) {
 //            noDataView = mVsNoData.inflate();
 //        }
-        noDataView.setVisibility(View.VISIBLE);
+        rlNoData.setVisibility(View.VISIBLE);
         mRecycleView.setVisibility(View.INVISIBLE);
-        noDataView.setOnClickListener(this);
+
+//        noDataView.setOnClickListener(this);
 
     }
 
@@ -126,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
     @Override
     public void onItemClickListener(RecyclerView.ViewHolder holder, View view, int position) {
         presenter.onItemClicked(position);
+//        ViewParent
     }
 
 

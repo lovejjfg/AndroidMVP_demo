@@ -7,7 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import com.lovejjfg.androidmvp_demo.R;
 
@@ -16,7 +18,7 @@ import com.lovejjfg.androidmvp_demo.R;
  * Created by zhangjun on 2016-02-01.
  * todo 为什么填充了显示不出来
  */
-public class RefreshRecycleView extends LinearLayout {
+public class RefreshRecycleView extends RelativeLayout {
 
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -31,13 +33,12 @@ public class RefreshRecycleView extends LinearLayout {
 
     public RefreshRecycleView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setOrientation(VERTICAL);
         initView();
     }
 
     private void initView() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.list_item_cardview, null);
-        View viewById = view.findViewById(R.id.card_view);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.refresh_recycleview, this, false);
+        addView(view, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 //        mSwipeRefreshLayout = new SwipeRefreshLayout(getContext());
 //        mRecyclerView = new RecyclerView(getContext());
 //        mSwipeRefreshLayout.addView(mRecyclerView, new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));

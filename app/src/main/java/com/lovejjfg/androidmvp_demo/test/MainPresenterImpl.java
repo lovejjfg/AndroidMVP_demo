@@ -18,6 +18,8 @@
 
 package com.lovejjfg.androidmvp_demo.test;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 public class MainPresenterImpl implements MainPresenter, OnLoadDateListener {
@@ -26,6 +28,7 @@ public class MainPresenterImpl implements MainPresenter, OnLoadDateListener {
     private FindItemsInteractor findItemsInteractor;
     private MyBaseAdapter mAdapter;
     private boolean isLoadingMore;
+    private boolean isRefresh;
 
     public MainPresenterImpl(MainView mainView) {
         this.mainView = mainView;
@@ -50,9 +53,11 @@ public class MainPresenterImpl implements MainPresenter, OnLoadDateListener {
 
     @Override
     public void onLoadMore() {
-        isLoadingMore = true;
-        mAdapter.notifyItemChanged(mAdapter.getDataItemCount());
-        findItemsInteractor.loadMoreItems(this);
+        if (!isLoadingMore) {
+            isLoadingMore = true;
+            mAdapter.notifyItemChanged(mAdapter.getDataItemCount());
+            findItemsInteractor.loadMoreItems(this);
+        }
 
     }
 
@@ -63,10 +68,13 @@ public class MainPresenterImpl implements MainPresenter, OnLoadDateListener {
 
     @Override
     public void onRefresh() {
-        if (mainView != null) {
+        if (mainView != null && !isRefresh) {
+            isRefresh = true;
             mainView.onRefreshView(true);
+            findItemsInteractor.loadItems(this);
+        } else {
+            Log.e("正在刷星！！", "waiting...");
         }
-        findItemsInteractor.loadItems(this);
 
     }
 
@@ -78,6 +86,7 @@ public class MainPresenterImpl implements MainPresenter, OnLoadDateListener {
 
     @Override
     public void onRefreshFinished(ArrayList<String> items) {
+        isRefresh = false;
         mainView.onRefreshView(false);
         mainView.setItems(items);
     }
@@ -85,6 +94,11 @@ public class MainPresenterImpl implements MainPresenter, OnLoadDateListener {
     @Override
     public void onLoadMoreFinished(ArrayList<String> items) {
         isLoadingMore = false;
+        if (null == items) {
+            mainView.showMessage("null-->没有更多数据了！！");
+            mAdapter.notifyItemChanged(mAdapter.getDataItemCount());
+            return;
+        }
         if (mainView != null) {
 //            mItems.addAll(items);
             if (mAdapter.getDataItemCount() > 15) {
@@ -109,6 +123,7 @@ public class MainPresenterImpl implements MainPresenter, OnLoadDateListener {
 
     @Override
     public void onLoadEmpty() {
+        isRefresh = false;
         mainView.onRefreshView(false);
 
         if (null != mAdapter) {
@@ -118,11 +133,6 @@ public class MainPresenterImpl implements MainPresenter, OnLoadDateListener {
         if (mainView != null) {
             mainView.onDataEmpty();
         }
-    }
-
-    public void setRefreshing(final boolean isRefreshing) {
-
-
     }
 
 

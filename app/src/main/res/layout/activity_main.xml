@@ -5,6 +5,9 @@
     android:layout_height="match_parent">
 
 
-    <include layout="@layout/refresh_recycleview" />
+    <!--<include layout="@layout/refresh_recycleview" />-->
+    <com.lovejjfg.androidmvp_demo.test.RefreshRecycleView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </RelativeLayout>

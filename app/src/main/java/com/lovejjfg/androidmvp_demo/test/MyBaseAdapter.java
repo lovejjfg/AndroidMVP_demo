@@ -16,18 +16,37 @@ public abstract class MyBaseAdapter extends RecyclerView.Adapter {
 
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_FOOTER = 1;
-    public final LayoutInflater mInflater;
-    public final ArrayList<String> mItems;
-    private boolean isFinished;
-    public final MainPresenter mPresenter;
+    private final Context mContext;
+
+    public LayoutInflater getInflater() {
+        if (null != mInflater) {
+            return mInflater;
+        } else {
+            mInflater = LayoutInflater.from(mContext);
+        }
+        return mInflater;
+    }
+
+    private LayoutInflater mInflater;
+    private final ArrayList<String> mItems;
+    private final MainPresenter mPresenter;
     private View noDataView;
     private View netErrorView;
 
+
+    public MainPresenter getmPresenter() {
+        return mPresenter;
+    }
+
+    public ArrayList<String> getmItems() {
+        return mItems;
+    }
 
     public MyBaseAdapter(Context context, ArrayList<String> items, MainPresenter presenter) {
         mInflater = LayoutInflater.from(context);
         mItems = items;
         mPresenter = presenter;
+        mContext = context;
         if (context instanceof ItemClickListener) {
             setOnItemClickListener((ItemClickListener) context);
         }
@@ -50,6 +69,8 @@ public abstract class MyBaseAdapter extends RecyclerView.Adapter {
         if (viewType == TYPE_ITEM) {
             return onCreateItemViewHolder(parent, viewType);
         } else if (viewType == TYPE_FOOTER) {
+
+
             return onCreateFooterViewHolder(parent, viewType);
         }
         return null;
@@ -74,7 +95,12 @@ public abstract class MyBaseAdapter extends RecyclerView.Adapter {
     }
 
 
-    protected abstract RecyclerView.ViewHolder onCreateFooterViewHolder(ViewGroup parent, int viewType);
+    protected RecyclerView.ViewHolder onCreateFooterViewHolder(ViewGroup parent, int viewType) {
+//            view.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        return new FooterViewHolder(onCreateFooterView(parent));
+    }
+
+    protected abstract View onCreateFooterView(ViewGroup parent);
 
     protected abstract RecyclerView.ViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType);
 
@@ -111,10 +137,10 @@ public abstract class MyBaseAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
             case TYPE_FOOTER:
-                bindFooterViewHolder( holder);
+                bindFooterViewHolder(holder);
                 break;
             case TYPE_ITEM:
-                bindItemViewHolder( holder, position);
+                bindItemViewHolder(holder, position);
                 break;
         }
 
@@ -127,23 +153,14 @@ public abstract class MyBaseAdapter extends RecyclerView.Adapter {
 
     public abstract void onDataEmpty();
 
-    public abstract void bindFooterViewHolder(RecyclerView.ViewHolder holder);
+    public void bindFooterViewHolder(RecyclerView.ViewHolder holder) {
+
+        ((FooterViewHolder) holder).view.setVisibility(getmPresenter().isLoadingMore() ? View.VISIBLE : View.GONE);
+//        notifyItemChanged(getItemCount());
+
+    }
 
     public abstract void bindItemViewHolder(RecyclerView.ViewHolder holder, final int position);
-
-
-    protected abstract class ItemViewHolder extends RecyclerView.ViewHolder {
-        public ItemViewHolder(View itemView) {
-            super(itemView);
-        }
-    }
-
-    public abstract class  FooterViewHolder extends RecyclerView.ViewHolder {
-        public FooterViewHolder(View itemView) {
-            super(itemView);
-        }
-    }
-
 
 
     public ItemClickListener itemClickListener;
@@ -154,5 +171,16 @@ public abstract class MyBaseAdapter extends RecyclerView.Adapter {
 
     public void setOnItemClickListener(ItemClickListener listener) {
         itemClickListener = listener;
+    }
+
+    class FooterViewHolder extends RecyclerView.ViewHolder {
+        View view;
+
+
+        public FooterViewHolder(View view) {
+            super(view);
+            this.view = view;
+        }
+
     }
 }
